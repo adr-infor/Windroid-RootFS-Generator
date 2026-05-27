@@ -15,7 +15,7 @@ export ARCH=$1
 export GIT_SHORT_SHA=$(git rev-parse --short HEAD)
 
 if [ ! -d "$INIT_DIR/built-pkgs" ]; then
-  echo "built-pkgs: Don't Exist. Run 'build-all.sh' for generate the needed libs for creating a rootfs for MiceWine."
+  echo "built-pkgs: Don't Exist. Run 'build-all.sh' for generate the needed libs for creating a rootfs for Windroid."
   exit 0
 fi
 
@@ -94,7 +94,7 @@ done
 
 mv new_makeSymlinks.sh makeSymlinks.sh
 
-$INIT_DIR/tools/create-rat-pkg.sh "MiceWine-RootFS" "MiceWine RootFS" "" "$ARCH" "($GIT_SHORT_SHA)" "rootfs" "$PWD" "$INIT_DIR"
+$INIT_DIR/tools/create-rat-pkg.sh "Windroid-RootFS" "Windroid RootFS" "" "$ARCH" "($GIT_SHORT_SHA)" "rootfs" "$PWD" "$INIT_DIR"
 
 cd "$INIT_DIR"
 
