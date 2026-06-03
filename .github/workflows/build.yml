@@ -38,9 +38,29 @@ jobs:
       run: |
         sudo cp -rf $PWD /mnt/arch/Windroid-RootFS-Generator
 
-    - name: "Download Latest Release Rat Packages"
+    - name: "Download and Extract Latest RootFS for Cache"
       run: |
-        curl -LO# https://github.com/KreitinnSoftware/Windroid-RootFS-Generator/releases/download/$(curl -s https://api.github.com/repos/KreitinnSoftware/Windroid-RootFS-Generator/releases | grep tag_name -m 1 | cut -d ":" -f 2 | sed "s/\"//g" | sed "s/,//g" | sed "s/ //g")/Windroid-Packages.zip || true
+        LATEST_TAG=$(curl -s https://api.github.com/repos/KreitinnSoftware/Windroid-RootFS-Generator/releases | grep tag_name -m 1 | cut -d ":" -f 2 | sed "s/\"//g" | sed "s/,//g" | sed "s/ //g")
+        if [ -n "$LATEST_TAG" ]; then
+          # Try to download RootFS for both architectures and extract packages
+          for arch in x86_64 aarch64; do
+            ROOTFS_URL="https://github.com/KreitinnSoftware/Windroid-RootFS-Generator/releases/download/$LATEST_TAG/Windroid-RootFS-$LATEST_TAG-$arch.rat"
+            echo "Trying to download: $ROOTFS_URL"
+            curl -fLO# "$ROOTFS_URL" || continue
+            if [ -f "Windroid-RootFS-$LATEST_TAG-$arch.rat" ]; then
+              echo "Extracting packages from RootFS for $arch..."
+              sudo mkdir -p /mnt/arch/Windroid-RootFS-Generator/built-pkgs
+              # Make our script executable and use it
+              sudo chmod +x /mnt/arch/Windroid-RootFS-Generator/tools/extract-packages-from-rootfs.sh
+              sudo /mnt/arch/Windroid-RootFS-Generator/tools/extract-packages-from-rootfs.sh \
+                "Windroid-RootFS-$LATEST_TAG-$arch.rat" \
+                "/mnt/arch/Windroid-RootFS-Generator/built-pkgs"
+              rm -f "Windroid-RootFS-$LATEST_TAG-$arch.rat"
+            fi
+          done
+        fi
+        # Also try Windroid-Packages.zip as fallback
+        curl -LO# https://github.com/KreitinnSoftware/Windroid-RootFS-Generator/releases/download/$LATEST_TAG/Windroid-Packages.zip || true
         sudo unzip -o Windroid-Packages.zip -d /mnt/arch/Windroid-RootFS-Generator/built-pkgs || true
         rm -f Windroid-Packages.zip
 
