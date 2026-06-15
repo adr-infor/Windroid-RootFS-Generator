@@ -46,7 +46,6 @@ CONFIGURE_ARGS="--enable-archs=i386,x86_64 \
 				--without-dbus \
 				--without-sane \
 				--without-udev \
-				--without-capi \
-				ac_cv_have_resolv=none required"
+				--without-capi"
 
 DEPENDENCIES="libX11 libXext libXcomposite libXrender libXcursor libXrandr libXxf86vm libXinerama libXfixes libXi Vulkan-Headers Vulkan-Loader libglvnd pulseaudio freetype libgnutls gstreamer gst-plugins-base gst-plugins-ugly gst-plugins-good gst-plugins-bad"
