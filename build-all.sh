@@ -76,7 +76,7 @@ downloadPackage()
 	local ARCHIVE_MIME_TYPE=$(file -b --mime-type $INIT_DIR/cache/$package)
 	local ARCHIVE_BASE_FOLDER
 
-	case $ARCHIVE_MIME_TYPE in "application/x-xz"|"application/gzip"|"application/x-bzip2")
+	case $ARCHIVE_MIME_TYPE in "application/x-xz"|"application/gzip"|"application/x-bzip2"|*tar*)
 		ARCHIVE_BASE_FOLDER=$(tar -tf "$INIT_DIR/cache/$package" | cut -d "/" -f 1 | head -n 1)
 
 		if [ ! -f "$ARCHIVE_BASE_FOLDER" ]; then
