@@ -20,3 +20,12 @@ tar -xf "wine-gecko-$GECKO_VERSION-x86_64.tar.xz" -C ../destdir-pkg/$PREFIX/../w
 rm -rf ../destdir-pkg/$PREFIX
 
 rm -f "wine-mono-$MONO_VERSION-x86.tar.xz" "wine-gecko-$GECKO_VERSION-x86.tar.xz" "wine-gecko-$GECKO_VERSION-x86_64.tar.xz"
+
+# Disable experimental WOW64 mode for stability on Android/Bionic
+mkdir -p ../destdir-pkg/$PREFIX/../wine/bin
+cat > ../destdir-pkg/$PREFIX/../wine/bin/wine-preload.sh << 'EOF'
+#!/bin/sh
+export WINE_DISABLE_WOW64=1
+exec "$@"
+EOF
+chmod +x ../destdir-pkg/$PREFIX/../wine/bin/wine-preload.sh

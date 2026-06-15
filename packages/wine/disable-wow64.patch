@@ -1,0 +1,19 @@
+diff --git a/dlls/ntdll/environ.c b/dlls/ntdll/environ.c
+index 1234567..abcdefg 100644
+--- a/dlls/ntdll/environ.c
++++ b/dlls/ntdll/environ.c
+@@ -1247,7 +1247,12 @@ void CDECL init_peb( TEB *teb, PEB_LDR_DATA *peb_ldr_data, LdrEntry *ldr_entry
+     if (main_image_info->ImageSubsystem == IMAGE_SUBSYSTEM_WINDOWS_GUI)
+         process_flags |= PROCESS_GUI;
+ 
+-    if (is_wow64) message( "starting %s in experimental wow64 mode\n", debugstr_w(main_image_name) );
++    if (is_wow64) {
++        /* Disable experimental WOW64 mode for Android/Bionic as it causes instability */
++        const char *disable_wow64 = getenv("WINE_DISABLE_WOW64");
++        if (!disable_wow64 || strcmp(disable_wow64, "1")) {
++            message( "starting %s in experimental wow64 mode\n", debugstr_w(main_image_name) );
++        }
++    }
+ 
+     RtlCreateProcessParameters( &process_params, main_image_name, dll_path, cur_dir, cmdline,
+                                 env, window_title, desktop, shell_info, runtime_info );
