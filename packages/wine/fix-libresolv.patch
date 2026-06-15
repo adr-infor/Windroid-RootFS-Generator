@@ -1,0 +1,26 @@
+diff --git a/configure.ac b/configure.ac
+index f9271c66d3d..655b1bdf6fc 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1527,6 +1527,12 @@ dnl **** Check for resolver library ***
+ if test "$ac_cv_header_resolv_h" = "yes"
+ then
+     AC_CACHE_CHECK([for resolver library], ac_cv_have_resolv,
++      dnl Force libresolv support for Android/Bionic
++      case "$host_os" in
++        android*)
++          ac_cv_have_resolv="none required"
++          ;;
++        *)
+       [ac_save_LIBS="$LIBS"
+        for lib in '' -lresolv
+        do
+@@ -1538,6 +1544,8 @@ then
+            [ac_cv_have_resolv=${lib:-"none required"}],[ac_cv_have_resolv="not found"])
+          test "x$ac_cv_have_resolv" = "xnot found" || break
+        done
++       ;;
++       esac
+        LIBS="$ac_save_LIBS"])
+ 
+     case "$ac_cv_have_resolv" in
